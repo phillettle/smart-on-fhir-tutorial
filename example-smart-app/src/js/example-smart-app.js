@@ -13,17 +13,7 @@
     console.log("Patient ID", smart.patient.id);
     }
     
-    extractData()
-      .then(function(p) {
-      drawVisualization(p);
-      })
-    .catch(function(error) {
-    console.error(error);
-    $('#loading').hide();
-    $('#errors').html(
-    '<pre>' + JSON.stringify(error, null, 2) + '</pre>'
-    );
-    });
+
 
     function onReady(smart) {
     console.log("Patient", smart.patient);
