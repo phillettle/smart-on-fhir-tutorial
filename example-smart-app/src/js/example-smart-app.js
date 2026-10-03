@@ -2,11 +2,32 @@
   window.extractData = function() {
     var ret = $.Deferred();
 
-    function onError() {
-      console.log('Loading error', arguments);
-      ret.reject();
+    function onError(error) {
+      console.error('FHIR Error:', error);
+      ret.reject(error);
     }
 
+    extractData()
+      .then(function(p) {
+      drawVisualization(p);
+      })
+    .catch(function(error) {
+    console.error(error);
+    $('#loading').hide();
+    $('#errors').html(
+    '<pre>' + JSON.stringify(error, null, 2) + '</pre>'
+    );
+    });
+
+    function onReady(smart) {
+    console.log("Patient", smart.patient);
+ 
+    if (!smart.patient) {
+    console.error("No patient context");
+    return;
+      }
+    }
+    
     function onReady(smart)  {
       if (smart.hasOwnProperty('patient')) {
         var patient = smart.patient;
@@ -15,9 +36,12 @@
                     type: 'Observation',
                     query: {
                       code: {
-                        $or: ['http://loinc.org|8302-2', 'http://loinc.org|8462-4',
-                              'http://loinc.org|8480-6', 'http://loinc.org|2085-9',
-                              'http://loinc.org|2089-1', 'http://loinc.org|55284-4']
+                        $or: ['http://loinc.org|8302-2',
+                              'http://loinc.org|8462-4',
+                              'http://loinc.org|8480-6',
+                              'http://loinc.org|2085-9',
+                              'http://loinc.org|2089-1',
+                              'http://loinc.org|55284-4']
                       }
                     }
                   });
