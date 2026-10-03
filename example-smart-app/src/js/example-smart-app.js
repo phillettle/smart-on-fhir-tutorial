@@ -4,9 +4,15 @@
 
     function onError(error) {
       console.error('FHIR Error:', error);
+      console.log(arguments);
       ret.reject(error);
     }
 
+    function onReady(smart) {
+    console.log("SMART state", smart);
+    console.log("Patient ID", smart.patient.id);
+    }
+    
     extractData()
       .then(function(p) {
       drawVisualization(p);
@@ -46,7 +52,13 @@
                     }
                   });
 
-        $.when(pt, obv).fail(onError);
+        pt.fail(function(err){
+        console.error("Patient read failed", err);
+        });
+ 
+        obv.fail(function(err){
+        console.error("Observation read failed", err);
+        });
 
         $.when(pt, obv).done(function(patient, obv) {
           var byCodes = smart.byCodes(obv, 'code');
